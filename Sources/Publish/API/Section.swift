@@ -94,14 +94,25 @@ public extension Section {
             return item
         }
     }
+    
+    mutating func removeItems(matching predicate: Predicate<Item<Site>> = .any) {
+        items.removeAll(where: predicate.matches)
+        
+        rebuildIndexes()
+    }
 
     /// Sort all items within this section using a closure.
     /// - Parameter sorter: The closure to use to sort the items.
     mutating func sortItems(by sorter: (Item<Site>, Item<Site>) throws -> Bool) rethrows {
         try items.sort(by: sorter)
+        
+        rebuildIndexes()
+    }
+    
+    mutating private func rebuildIndexes() {
         itemIndexesByPath = [:]
         itemIndexesByTag = [:]
-
+        
         for (index, item) in items.enumerated() {
             itemIndexesByPath[item.relativePath] = index
 

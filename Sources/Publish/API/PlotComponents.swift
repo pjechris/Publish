@@ -28,7 +28,8 @@ public extension Node where Context == HTML.DocumentContext {
         titleSeparator: String = " | ",
         stylesheetPaths: [Path] = ["/styles.css"],
         rssFeedPath: Path? = .defaultForRSSFeed,
-        rssFeedTitle: String? = nil
+        rssFeedTitle: String? = nil,
+        other: () -> Node<HTML.HeadContext> = { .empty }
     ) -> Node {
         var title = location.title
 
@@ -61,7 +62,8 @@ public extension Node where Context == HTML.DocumentContext {
             .unwrap(location.imagePath ?? site.imagePath, { path in
                 let url = site.url(for: path)
                 return .socialImageLink(url)
-            })
+            }),
+            other()
         )
     }
 }
